@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import type { ExampleSite } from '../data/examples';
-import { examples as initialExamples } from '../data/examples';
 import { ADMIN_PASSWORD } from '../password';
 import { ds, theme } from '../designSystem';
 import { Eye, EyeOff, Lock, Plus, ArrowUpDown, ArrowUp, ArrowDown, X } from 'lucide-react';
+import { useExamples } from '../examplesContext';
 
 const createEmptyExample = (nextId: number): ExampleSite => ({
   id: String(nextId),
@@ -21,16 +21,17 @@ const createEmptyExample = (nextId: number): ExampleSite => ({
 });
 
 const Adminpannel: React.FC = () => {
+  const { items, setItems } = useExamples();
+
   const [passwordInput, setPasswordInput] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isAuthed, setIsAuthed] = useState(false);
   const [error, setError] = useState('');
 
-  const [items, setItems] = useState<ExampleSite[]>(initialExamples);
   const [draft, setDraft] = useState<ExampleSite>(() =>
-    createEmptyExample(initialExamples.length + 1),
+    createEmptyExample((items?.length ?? 0) + 1),
   );
-  const [activeId, setActiveId] = useState<string | null>(initialExamples[0]?.id ?? null);
+  const [activeId, setActiveId] = useState<string | null>(items[0]?.id ?? null);
 
   const nextId = useMemo(
     () => (items.length ? Math.max(...items.map((i) => Number(i.id))) + 1 : 1),

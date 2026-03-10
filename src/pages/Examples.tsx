@@ -1,23 +1,25 @@
 import React, { Fragment, useMemo, useState } from 'react';
 import { ExternalLink, Clock, Zap, TrendingUp, Filter } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { examples, industries, funnelTypes, type ExampleSite } from '../data/examples';
+import { type ExampleSite } from '../data/examples';
 import { ds } from '../designSystem';
+import { useExamples } from '../examplesContext';
 
 const Examples: React.FC = () => {
+  const { items, industries, funnelTypes } = useExamples();
   const [selectedIndustry, setSelectedIndustry] = useState('All');
   const [selectedFunnelType, setSelectedFunnelType] = useState('All');
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
 
   const filteredExamples = useMemo(
     () =>
-      examples.filter((example) => {
+      items.filter((example) => {
         const matchesIndustry = selectedIndustry === 'All' || example.industry === selectedIndustry;
         const matchesFunnelType =
           selectedFunnelType === 'All' || example.funnelType === selectedFunnelType;
         return matchesIndustry && matchesFunnelType;
       }),
-    [selectedIndustry, selectedFunnelType],
+    [items, selectedIndustry, selectedFunnelType],
   );
 
   const gridRemainder = filteredExamples.length % 3;
